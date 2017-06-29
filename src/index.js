@@ -25,7 +25,7 @@ var FunctionHarness = function(nameOrPath, config) {
                         invoke.bindings[name] = results[name];
                     }
 
-                    cb(invoke.context.bindings);
+                    cb(invoke.context);
                 },
                 log: function(log) {
                     console.log(log);
@@ -49,7 +49,7 @@ var FunctionHarness = function(nameOrPath, config) {
                                 invoke.bindings[name] = results[name];
                             }
 
-                            resolve(invoke.context.bindings);
+                            resolve(invoke.context);
                         }
                     },
                     log: function(log) {
