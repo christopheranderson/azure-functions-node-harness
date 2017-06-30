@@ -1,11 +1,13 @@
 var util = require('util'),
     path = require('path')
 
-var FunctionHarness = function(nameOrPath, config) {
+var FunctionHarness = function(nameOrPath, config = {}) {
     that = this;
-    this.config = config || {};
+    this.config = config;
+
     this.f = loadFunction(nameOrPath, this.config.dirname);
-    this.invoke = function(data, cb) {
+    
+    this.invoke = function(data, cb = _ => {}) {
         invoke = this;
         var inputs = (function(data) {
             var out = [];
@@ -14,8 +16,6 @@ var FunctionHarness = function(nameOrPath, config) {
             }
             return out;
         })(data);
-
-        cb = cb || function () {}
        
         return new Promise(function(resolve, reject) {
             invoke.context = {
