@@ -3,13 +3,15 @@
   "version": "0.0.1",
   "description": "Easily invoke your NodeJS Azure Functions during unit tests",
   "main": "./src/index.js",
-  "scripts": {
-  },
+  "scripts": {},
   "keywords": [
     "azure",
     "azurefunctions",
     "test"
   ],
   "author": "christopheranderson",
-  "license": "MIT"
+  "license": "MIT",
+  "devDependencies": {
+    "tape": "^4.7.0"
+  }
 }
