@@ -15,53 +15,36 @@ var FunctionHarness = function(nameOrPath, config) {
             return out;
         })(data);
 
-        if(cb) {
-            this.context = {
+        cb = cb || function () {}
+       
+        return new Promise(function(resolve, reject) {
+            invoke.context = {
                 bindings: data,
-                done: function(results) {
-                    var output = [];
-                    
-                    for (var name in results) {
-                        invoke.bindings[name] = results[name];
-                    }
+                done: function(err, results) {
+                    if(err) {
+                        reject(err);
+                        return cb(err);
+                    } else {
+                        var output = [];
+                
+                        for (var name in results) {
+                            invoke.bindings[name] = results[name];
+                        }
 
-                    cb(invoke.context);
+                        resolve(invoke.context);
+                        return cb(invoke.context);
+                    }
                 },
                 log: function(log) {
                     console.log(log);
                 }
             }
 
-            inputs.unshift(this.context);
+            inputs.unshift(invoke.context);
 
             that.f.function.apply(null, inputs);
-        } else {
-            return new Promise(function(resolve, reject) {
-                invoke.context = {
-                    bindings: data,
-                    done: function(err, results) {
-                        if(err) {
-                            reject(err);
-                        } else {
-                            var output = [];
-                    
-                            for (var name in results) {
-                                invoke.bindings[name] = results[name];
-                            }
-
-                            resolve(invoke.context);
-                        }
-                    },
-                    log: function(log) {
-                        console.log(log);
-                    }
-                }
-
-                inputs.unshift(invoke.context);
-
-                that.f.function.apply(null, inputs);
-            });
-        }
+        });
+        
     }
     return {
         invoke: that.invoke
