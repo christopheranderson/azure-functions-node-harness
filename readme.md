@@ -72,6 +72,14 @@ TBD, but basically, you can use something like mocha, set up the function in bef
  - [chai](http://chaijs.com/)
  - [chai-as-promised](https://github.com/domenic/chai-as-promised)
 
+## Build
+Clone this repository then run:
+
+```
+npm install 
+npm test
+```
+
 ## License
 
 [MIT](LICENSE)

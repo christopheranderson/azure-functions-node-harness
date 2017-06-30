@@ -3,7 +3,9 @@
   "version": "0.0.1",
   "description": "Easily invoke your NodeJS Azure Functions during unit tests",
   "main": "./src/index.js",
-  "scripts": {},
+  "scripts": {
+    "test": "node_modules/.bin/tape tests/**/*.test.js"
+  },
   "keywords": [
     "azure",
     "azurefunctions",
