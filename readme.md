@@ -66,11 +66,48 @@ invocation.then(function(results){
 
 ## Using with test frameworks (coming soon...)
 
-TBD, but basically, you can use something like mocha, set up the function in before then call invoke in each test. If you use chai and chai-as-promised, you should be able to have some nifty assertions.
+The general idea is to set up the function once then call invoke in each test. If you use chai and chai-as-promised, you should be able to have some nifty assertions.
 
- - [mocha](https://mochajs.org/)
- - [chai](http://chaijs.com/)
- - [chai-as-promised](https://github.com/domenic/chai-as-promised)
+### [mocha](https://mochajs.org/) 
+coming soon
+
+### [chai](http://chaijs.com/)
+coming soon
+
+### [chai-as-promised](https://github.com/domenic/chai-as-promised)
+coming soon
+ 
+### [tape](https://github.com/substack/tape)
+
+Your test file would look like:
+
+```javascript
+var test = require('tape');
+var funcHarness = require('azure-functions-node-harness');
+
+test('Tests', function (group) {
+    var funcToTest = funcHarness('NameOfFunction', { dirname: 'foldername-functions-live-in' });
+
+    group.test('test to run', function (t) {
+        t.plan(1);
+
+        funcToTest.invoke({
+            data: {}
+        }).then(context => {
+            t.equal("yippee!", context.binding.output);
+        }).catch(err =>{
+            t.fail(`something went wrong during test: ${err}`);
+        });
+});
+```
+
+## Build
+Clone this repository then run:
+
+```
+npm install 
+npm test
+```
 
 ## License
 
