@@ -1,5 +1,6 @@
 var util = require('util'),
-    path = require('path')
+    path = require('path'),
+    fs = require('fs');
 
 var FunctionHarness = function(nameOrPath, config = {}) {
     that = this;
@@ -54,9 +55,25 @@ var FunctionHarness = function(nameOrPath, config = {}) {
 var loadFunction = function(nameOrPath, dirname) {   
     var directory = dirname || process.cwd();
 
-    //Otherwise, if we were given a path or name, attempt to load it
-    var pathToModule = require.resolve(path.resolve(path.join(directory, nameOrPath)));
-    var config = require(path.join(path.dirname(pathToModule), 'function.json'));
+    var pathToModule = path.resolve(path.join(directory, nameOrPath));
+
+    if (!fs.existsSync(pathToModule)) {
+        throw `Could not find a function: '${pathToModule}' not a valid directory.`;
+    }
+
+    try{
+        pathToModule = require.resolve(pathToModule)
+    }catch(err){
+        throw `Could not find a function: '${pathToModule}' not a valid module.`;
+    }
+
+    var config = {};
+    try{
+        config = require(path.join(path.dirname(pathToModule), 'function.json'));
+    }catch(err){
+        throw `Could not find a function: '${pathToModule}' no function.json file.`;
+    }
+  
     var m = require(pathToModule);
 
     if(typeof m === 'function') {
@@ -80,7 +97,7 @@ var loadFunction = function(nameOrPath, dirname) {
             config: config
         };
     } else {
-        throw 'Could not find a function based on the Azure Functions resolution rules'
+        throw 'Could not find a function: failed on the Azure Functions resolution rules.';
     }
 }
 
