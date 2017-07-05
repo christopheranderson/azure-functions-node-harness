@@ -1,3 +1,4 @@
 {
-    "entryPoint": "mainFunction"
+    "entryPoint": "mainFunction",
+    "disabled": false
 }
