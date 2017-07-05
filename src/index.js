@@ -1,4 +1,5 @@
 const functionLoader = require('./function-loader');
+const requestBuilder = require('./request-builder');
 
 var FunctionHarness = function(nameOrPath, config = {}) {
     that = this;
@@ -11,7 +12,11 @@ var FunctionHarness = function(nameOrPath, config = {}) {
         var inputs = (function(data) {
             var out = [];
             for(var name in data) {
-                out.push(data[name]);
+                if (name === 'requestBody'){
+                    out.push(requestBuilder.create(data[name]));
+                }else{
+                    out.push(data[name]);
+                }
             }
             return out;
         })(data);

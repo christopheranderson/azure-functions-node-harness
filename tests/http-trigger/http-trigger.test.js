@@ -1,5 +1,6 @@
 const test = require("tape");
 const func = require('../../src/index.js');
+const requestBuilder = require('../../src/request-builder')
 
 test('Http trigger', function(group){
     group.test('request is passed to function as parameter', function (t){
@@ -19,5 +20,23 @@ test('Http trigger', function(group){
         httpFunction.invoke({req: expected});
     });
 
+    group.test('if http binding request object built', function (t){
+        t.plan(1);
+
+        const requestBody = {
+            test: "test"
+        }
+
+        const expected = requestBuilder.create(requestBody);
+
+        var functionToTest = function(context, req) {
+            const actual = req;
+            t.same(actual, expected);
+        }
+
+        const httpFunction = func('http-func', {moduleConfig: {function: functionToTest}}); 
+        httpFunction.invoke({requestBody: requestBody});
+    });
+    
     group.end();
 });
