@@ -6,7 +6,7 @@ var FunctionHarness = function(nameOrPath, config = {}) {
     that = this;
     this.config = config;
 
-    this.f = loadFunction(nameOrPath, this.config.dirname);
+    this.moduleConfig = this.config.moduleConfig || loadFunction(nameOrPath, this.config.dirname);
     
     this.invoke = function(data, cb = _ => {}) {
         invoke = this;
@@ -43,7 +43,7 @@ var FunctionHarness = function(nameOrPath, config = {}) {
 
             inputs.unshift(invoke.context);
 
-            that.f.function.apply(null, inputs);
+            that.moduleConfig.function.apply(null, inputs);
         });
         
     }
