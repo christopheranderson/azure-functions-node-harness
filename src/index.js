@@ -8,6 +8,11 @@ var FunctionHarness = function(nameOrPath, config = {}) {
 
     this.moduleConfig = this.config.moduleConfig || functionLoader.loadFunction(nameOrPath, this.config.dirname);
     
+    this.invokeHttpTrigger = function(httpTriggerData, otherBindings = {}, cb = _ => {}){
+        const data = Object.assign({}, {httpTrigger: httpTriggerData}, otherBindings);
+        this.invoke(data);
+    }
+
     this.invoke = function(data, cb = _ => {}) {
         invoke = this;
         var inputs = inputBinder(data);
@@ -42,7 +47,8 @@ var FunctionHarness = function(nameOrPath, config = {}) {
         
     }
     return {
-        invoke: that.invoke
+        invoke: that.invoke,
+        invokeHttpTrigger: that.invokeHttpTrigger
     }
 }
 

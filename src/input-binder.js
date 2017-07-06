@@ -1,16 +1,31 @@
-const requestBuilder = require('./request-builder');
+const requestBuilder = require('./request-builder'),
+    methods = require('./method');
 
-module.exports = function (data){
-    return (function(data) {
+module.exports = function (data) {
+    const out = [];
 
-        var out = [];
-        for(var name in data) {
-            if (name === 'requestBody'){
-                out.push(requestBuilder.create(data[name]));
-            }else{
-                out.push(data[name]);
-            }
+    for (const name in data) {
+        if (name === "httpTrigger") {
+            const triggerInfo = data["httpTrigger"];
+
+            let reqBody = {};
+            let method = methods.post;
+            let otherProps = {};
+            
+            Object.keys(triggerInfo).forEach(key => {
+                if (key === "reqBody") {
+                    reqBody = triggerInfo[key];
+                }else if(key === "method"){
+                    method = triggerInfo[key];
+                }else{
+                    otherProps[key] = triggerInfo[key];
+                }
+            });
+
+            out.push(requestBuilder.create(reqBody,method, otherProps));
+        } else {
+            out.push(data[name]);
         }
-        return out;
-    })(data);
+    }
+    return out;
 }
