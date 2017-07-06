@@ -74,7 +74,7 @@ invocation.then(function(context){
 ### `#.invokeHttpTrigger(httpTriggerData,data: Object, [cb: function])` 
 Invoke http trigger functions.  It is possible to use the `invoke` to get the same results but this simplifies the building of the request object.
 
-```
+```javascript
 var queueFunc = func('queue');
 
 // Supports callbacks
