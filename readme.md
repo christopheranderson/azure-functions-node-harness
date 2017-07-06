@@ -77,7 +77,6 @@ Invoke http trigger functions.  It is possible to use the `invoke` to get the sa
 ```javascript
 var httpFunction = func('httpfunc');
 
-// Supports callbacks
 httpFunction.invokeHttpTrigger({ 
     reqBody: requestBody,
     method: "POST",  //optional
@@ -86,6 +85,18 @@ httpFunction.invokeHttpTrigger({
     // do test validations here.
 });
 ```
+
+If you use the ```sample.dat``` file for testing locally with the Azure functions CLI you can use that file by calling ```invokeHttpTrigger``` with no parameters.  
+
+```javascript
+var httpFunction = func('httpfunc');
+
+// sample.dat is used for request body. 
+httpFunction.invokeHttpTrigger().then(context => {
+    // do test validations here.
+});
+```
+
 #### Parameters
 - httpTrigger
     - object with reqBody.  Simplifies building the entire http request object. Can override any parameters like `headers`.
