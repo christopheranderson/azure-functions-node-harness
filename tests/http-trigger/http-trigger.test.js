@@ -20,14 +20,22 @@ test('Http trigger', function(group){
         httpFunction.invoke({req: expected});
     });
 
-    group.test('if http binding request object built', function (t){
+    group.test('if http binding full request object built', function (t){
         t.plan(1);
 
         const requestBody = {
             test: "test"
         }
 
-        const expected = requestBuilder.create(requestBody);
+        const expected =  {
+            headers: {},
+            originalUrl: "http://node-test-harness",
+            params: {},
+            query: {},
+            method: "POST",
+            body: requestBody,
+            rawBody: JSON.stringify(requestBody),
+        }
 
         var functionToTest = function(context, req) {
             const actual = req;
