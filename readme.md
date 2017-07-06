@@ -88,6 +88,7 @@ httpFunction.invokeHttpTrigger({
 });
 ```
 
+<<<<<<< HEAD
 If you use the ```sample.dat``` file for testing locally with the Azure functions CLI you can use that file by calling ```invokeHttpTrigger``` with no parameters.  
 
 ```javascript
@@ -99,6 +100,8 @@ httpFunction.invokeHttpTrigger().then(context => {
 });
 ```
 
+=======
+>>>>>>> fixed typos
 #### Parameters
 - httpTrigger
     - object with reqBody.  Simplifies building the entire http request object. Can override any parameters like `headers`.
