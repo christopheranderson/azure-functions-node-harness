@@ -4,7 +4,7 @@
 
 Easily invoke your Functions from test harnesses, etc.
 
-## install
+## Install
 coming soon to npm. for now clone and use as local module.
 
 ## Usage
@@ -71,7 +71,8 @@ invocation.then(function(context){
  - cb
     - Optionally give a callback for your Function. If you don't, the funciton will return a Promise.
 
-### `#.invokeHttpTrigger(httpTriggerData,data: Object, [cb: function])` Invoke http trigger functions.  It is possible to use the `invoke` to get the same results but this simplifies the building of the request object.
+### `#.invokeHttpTrigger(httpTriggerData,data: Object, [cb: function])` 
+Invoke http trigger functions.  It is possible to use the `invoke` to get the same results but this simplifies the building of the request object.
 
 ```
 var queueFunc = func('queue');
@@ -81,7 +82,7 @@ httpFunction.invokeHttpTrigger({
     reqBody: requestBody,
     method: "POST",  //optional
     headers: headers //optional, along with any other request parameters you might want to tweek
- }).then(context => {
+ }, {parameterName: "another parameter"}).then(context => {
     // do test validations here.
 });
 ```
