@@ -4,7 +4,8 @@
 
 Easily invoke your Functions from test harnesses, etc.
 
-npm i --save christopheranderson/<TODO>
+## install
+coming soon to npm. for now clone and use as local module.
 
 ## Usage
 
@@ -12,11 +13,13 @@ npm i --save christopheranderson/<TODO>
 var func = require('azure-functions-node-harness');
 
 var queueFunc = func('queue'); // Optional config: , {dirname: __dirname}); 
-var invocation = queueFunc.invoke({trigger: {'hello':'world'}});
+var invocation = queueFunc.invoke({'hello':'world'});
 
-invocation.then(function(data) {
-    console.log('done');
-    console.log(JSON.stringify(data, null, ' ' ));
+invocation.then(function(context) {
+    // validate result 
+    if (context.bindings.out == "somevalue"){
+        console.log("success");
+    }
 })
 ```
 
@@ -29,6 +32,7 @@ var queueFunc = func('queue'); // Optional config: , {dirname: __dirname});
 var httpFunc = new func('queue'); //same thing - supports new and factory idioms
 ```
 
+#### Parameters
  - nameOrPath: string
     - Selects the name or path you want to load. Uses node module loading logic (i.e. `queue` will look for `./queue/index.js`, )
  - config: Object
@@ -36,6 +40,8 @@ var httpFunc = new func('queue'); //same thing - supports new and factory idioms
     - Properties:
         - dirname: string
             - Which directory to look in for functions. Useful when tests are in a different directory than sample functions.
+        - moduleConfig: object
+            - instead of looking up function you can pass a function and it's function.json manually. mostly used internally.          
 
 ### `#.invoke(data: Object, [cb: function])`
 
@@ -45,13 +51,13 @@ var func = require('azure-functions-node-harness');
 var queueFunc = func('queue');
 
 // Supports callbacks
-queueFunc.invoke({trigger: {'hello':'world'}}, function(err, results) {
+queueFunc.invoke({parameterName: {'hello':'world'}}, function(err, results) {
     // add results handling logic here
 };
 
 // Returns a promise if no callback is given
-var invocation = queueFunc.invoke({trigger: {'hello':'world'}});
-invocation.then(function(results){
+var invocation = queueFunc.invoke({parameterName: {'hello':'world'}});
+invocation.then(function(context){
     // success logic here
 }).catch(function(err){
     // failure logic here
@@ -59,9 +65,32 @@ invocation.then(function(results){
 
 ```
 
+#### Parameters
  - data
     - Key-value list of inputs. Use the name of your bindings for the keys
  - cb
+    - Optionally give a callback for your Function. If you don't, the funciton will return a Promise.
+
+### `#.invokeHttpTrigger(httpTriggerData,data: Object, [cb: function])` Invoke http trigger functions.  It is possible to use the `invoke` to get the same results but this simplifies the building of the request object.
+
+```
+var queueFunc = func('queue');
+
+// Supports callbacks
+httpFunction.invokeHttpTrigger({ 
+    reqBody: requestBody,
+    method: "POST",  //optional
+    headers: headers //optional, along with any other request parameters you might want to tweek
+ }).then(context => {
+    // do test validations here.
+});
+```
+#### Parameters
+- httpTrigger
+    - object with reqBody.  Simplifies building the entire http request object. Can override any parameters like `headers`.
+- data
+    - Key-value list of other inputs. Use the name of your bindings for the keys
+- cb
     - Optionally give a callback for your Function. If you don't, the funciton will return a Promise.
 
 ## Using with test frameworks (coming soon...)
