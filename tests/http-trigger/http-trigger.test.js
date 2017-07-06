@@ -84,7 +84,7 @@ test('Http trigger', function (group) {
         t.plan(1);
         
         // use function loader so can override function for testing.
-        let moduleConfig = functionLoader.loadFunction("sampledata-func", "tests/http-trigger")
+        let moduleConfig = functionLoader.loadFunction("sampledata-func", "tests/test-functions")
 
         const expected = getExpectedState({
             "sampleData": "001",
