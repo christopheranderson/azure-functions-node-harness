@@ -5,7 +5,9 @@
 Easily invoke your Functions from test harnesses, etc.
 
 ## Install
-coming soon to npm. for now clone and use as local module.
+coming soon to npm. 
+
+for now: npm install jsturtevant/azure-functions-node-harness --save-dev
 
 ## Usage
 
