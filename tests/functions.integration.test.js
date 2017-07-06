@@ -1,5 +1,5 @@
 var test = require("tape");
-var func = require('../../src/index.js');
+var func = require('../src/index.js');
 
 test('#### function integration tests ####', function(group){   
     group.test('should return if exists', function (t){

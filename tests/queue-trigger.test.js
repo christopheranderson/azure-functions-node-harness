@@ -1,5 +1,5 @@
 var test = require("tape");
-var func = require('../../src/index.js');
+var func = require('../src/index.js');
 
 test('#### Queue trigger ####', function(group){
     var queueFunc = func('queue-func', {dirname: 'tests/test-functions'}); 

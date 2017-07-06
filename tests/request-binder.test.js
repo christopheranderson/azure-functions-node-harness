@@ -1,5 +1,5 @@
 const test = require("tape");
-const inputBinder = require('../../src/input-binder');
+const inputBinder = require('../src/input-binder');
 
 test('#### Http trigger ####', function (group) {
     group.test('binding pops the parameters off in an array', function (t) {

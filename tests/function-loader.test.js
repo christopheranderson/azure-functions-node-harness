@@ -1,12 +1,12 @@
 var test = require("tape");
-var funcLoader = require('../../src/function-loader');
+var funcLoader = require('../src/function-loader');
 
 test('#### function loader tests ####', function (group) {
     group.test('should load function.json and extract function', function (t) {
         const actual = funcLoader.loadFunction('simple-test-func', 'tests/test-functions');
         const expected = {
             config: {},
-            function: require('../test-functions/simple-test-func/index'),
+            function: require('./test-functions/simple-test-func/index'),
             sampleData:{}
         };
 
@@ -20,7 +20,7 @@ test('#### function loader tests ####', function (group) {
             config: {
                 "disabled": false
             },
-            function: require('../test-functions/single-export-func').mainFunction,
+            function: require('./test-functions/single-export-func').mainFunction,
             sampleData:{}
         };
 
@@ -34,7 +34,7 @@ test('#### function loader tests ####', function (group) {
             config: {
                 "disabled": false
             },
-            function: require('../test-functions/run-property-func').run,
+            function: require('./test-functions/run-property-func').run,
             sampleData:{}
         }
 
@@ -49,7 +49,7 @@ test('#### function loader tests ####', function (group) {
                 "entryPoint": "mainFunction",
                 "disabled": false
             },
-            function: require('../test-functions/entrypoint-func').mainFunction,
+            function: require('./test-functions/entrypoint-func').mainFunction,
             sampleData:{}
         };
 
@@ -61,7 +61,7 @@ test('#### function loader tests ####', function (group) {
         const actual = funcLoader.loadFunction('sampledata-func', 'tests/test-functions');
         const expected = {
             config: {},
-            function: require('../test-functions/sampledata-func'),
+            function: require('./test-functions/sampledata-func'),
             sampleData: {
                 "sampleData": "001",
                 "somethingelse": "000"

@@ -1,6 +1,6 @@
 const test = require("tape"),
-    requestBuilder = require('../../src/request-builder'),
-    methods = require('../../src/method');
+    requestBuilder = require('../src/request-builder'),
+    methods = require('../src/method');
 
 
 test('#### request builder tests ####', function(group){   

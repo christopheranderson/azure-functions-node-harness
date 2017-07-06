@@ -1,7 +1,7 @@
 const test = require("tape");
-const func = require('../../src/index.js');
-const requestBuilder = require('../../src/request-builder');
-const functionLoader = require('../../src/function-loader');
+const func = require('../src/index.js');
+const requestBuilder = require('../src/request-builder');
+const functionLoader = require('../src/function-loader');
 
 test('#### Http trigger ####', function (group) {
     group.test('request is passed to function as parameter', function (t) {
