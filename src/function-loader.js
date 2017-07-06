@@ -23,28 +23,44 @@ module.exports = {
         }catch(err){
             throw `Could not find a function: '${pathToModule}' no function.json file.`;
         }
-    
+
+        const sampleDataPath = path.join(path.dirname(pathToModule), 'sample.dat');
+        let sampleData = {};
+        if (fs.existsSync(sampleDataPath))
+        {
+            try{
+                sampleData = JSON.parse(fs.readFileSync(sampleDataPath, 'utf8'));
+            }catch(ex){
+                console.log("was unable to load sample data. skipping.");
+                // noop 
+            }
+        }   
+
         var m = require(pathToModule);
 
         if(typeof m === 'function') {
             return { 
                 function: m,
-                config: config
+                config: config,
+                sampleData: sampleData
             };
         } else if (config.entryPoint && m[config.entryPoint]) {
             return {
                 function: m[config.entryPoint],
-                config: config
+                config: config,
+                sampleData: sampleData
             };
         } else if (Object.keys(m).length === 1) {
             return {
                 function: m[Object.keys(m)[0]],
-                config: config
+                config: config,
+                sampleData: sampleData
             };
         } else if (typeof m['run'] === 'function') {
             return {
                 function: m['run'],
-                config: config
+                config: config,
+                sampleData: sampleData
             };
         } else {
             throw 'Could not find a function: failed on the Azure Functions resolution rules.';

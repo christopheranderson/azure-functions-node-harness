@@ -1,6 +1,7 @@
 const test = require("tape");
 const func = require('../../src/index.js');
-const requestBuilder = require('../../src/request-builder')
+const requestBuilder = require('../../src/request-builder');
+const functionLoader = require('../../src/function-loader');
 
 test('Http trigger', function (group) {
     group.test('request is passed to function as parameter', function (t) {
@@ -51,7 +52,7 @@ test('Http trigger', function (group) {
         };
 
         const expected = getExpectedState(requestBody, headers);
-        
+
         var functionToTest = function (context, req) {
             const actual = req;
             t.same(actual, expected);
@@ -77,6 +78,27 @@ test('Http trigger', function (group) {
 
         const httpFunction = func('http-func', { moduleConfig: { function: functionToTest } });
         httpFunction.invokeHttpTrigger({ reqBody: requestBody }, { otherBinding: "other data" });
+    });
+
+    group.test('if pass no data it will use sample.json', function (t) {
+        t.plan(1);
+        
+        // use function loader so can override function for testing.
+        let moduleConfig = functionLoader.loadFunction("sampledata-func", "tests/http-trigger")
+
+        const expected = getExpectedState({
+            "sampleData": "001",
+            "somethingelse": "000"
+        });
+
+        //override for testing
+        moduleConfig.function = function (context, req, otherBinding) {
+            const actual = req;
+            t.same(actual, expected);
+        }
+
+        const httpFunction = func('sampledata-func', { moduleConfig: moduleConfig });
+        httpFunction.invokeHttpTrigger();
     });
 
     group.end();
