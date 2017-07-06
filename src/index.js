@@ -1,5 +1,6 @@
-const functionLoader = require('./function-loader');
-const requestBuilder = require('./request-builder');
+const functionLoader = require('./function-loader'),
+      inputBinder = require('./input-binder');
+
 
 var FunctionHarness = function(nameOrPath, config = {}) {
     that = this;
@@ -9,17 +10,7 @@ var FunctionHarness = function(nameOrPath, config = {}) {
     
     this.invoke = function(data, cb = _ => {}) {
         invoke = this;
-        var inputs = (function(data) {
-            var out = [];
-            for(var name in data) {
-                if (name === 'requestBody'){
-                    out.push(requestBuilder.create(data[name]));
-                }else{
-                    out.push(data[name]);
-                }
-            }
-            return out;
-        })(data);
+        var inputs = inputBinder(data);
        
         return new Promise(function(resolve, reject) {
             invoke.context = {
