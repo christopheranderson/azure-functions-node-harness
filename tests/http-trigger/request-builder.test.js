@@ -3,7 +3,7 @@ const test = require("tape"),
     methods = require('../../src/method');
 
 
-test('request builder tests', function(group){   
+test('#### request builder tests ####', function(group){   
     group.test('should return full request body and rawBody filled', function (t){
         const actual = requestBuilder.create('body');
         const expected = {

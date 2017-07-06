@@ -1,7 +1,7 @@
 var test = require("tape");
 var func = require('../../src/index.js');
 
-test('Queue trigger', function(group){
+test('#### Queue trigger ####', function(group){
     var queueFunc = func('queue-func', {dirname: 'tests/test-functions'}); 
     
     group.test('promise should return output on binding', function (t){

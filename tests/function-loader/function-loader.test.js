@@ -1,7 +1,7 @@
 var test = require("tape");
 var funcLoader = require('../../src/function-loader');
 
-test('function loader tests', function (group) {
+test('#### function loader tests ####', function (group) {
     group.test('should load function.json and extract function', function (t) {
         const actual = funcLoader.loadFunction('simple-test-func', 'tests/test-functions');
         const expected = {
