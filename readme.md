@@ -1,8 +1,8 @@
 # Azure Functions Node Harness
 
-> :construction: This library is still in alpha and not supported by the Azure Functions team for any use. :construction:
-
 Easily invoke your Functions from test harnesses, etc.
+
+This is a fork from https://github.com/christopheranderson/azure-functions-node-harness.  I am using this repo for testing a few ideas and prototyping.  Please leave feedback (through github issues) if you love it, hate it, or have suggestions.
 
 ## Install
 coming soon to npm. 
@@ -63,8 +63,7 @@ invocation.then(function(context){
     // success logic here
 }).catch(function(err){
     // failure logic here
-})
-
+});
 ```
 
 #### Parameters
