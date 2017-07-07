@@ -29,7 +29,7 @@ var testFiles = getAllFilesFromFolder(testDir).filter(x => {return x.endsWith('.
 
 testFiles.forEach(file => {
     console.log('running test file: ' + file);
-    var pathToModule = path.resolve(path.join(testDir, file));
+    var pathToModule = path.resolve(file);
     require(pathToModule);
 }); 
 

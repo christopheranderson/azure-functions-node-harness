@@ -10,7 +10,7 @@
             "name": "Run Tests",
             "program": "${workspaceRoot}\\tests\\test-runner.js",
             "args": [
-                "./" //run all the tests
+                "./tests" //run all the tests
             ]
         }
     ]
