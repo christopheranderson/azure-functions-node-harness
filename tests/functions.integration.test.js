@@ -42,4 +42,17 @@ test('#### function integration tests ####', function(group){
         });
     });
 
+    group.test('if advanced logging is used should not fail test', function (t){
+        t.plan(1);
+
+        var loggingFunc =  func('logging-test',  {dirname: 'tests/test-functions'});
+
+        loggingFunc.invoke({}).then( context => {
+            t.pass("function was invoked successfully")
+        })
+        .catch(err => {
+            t.fail(`should not reach here: ${err}`);
+        });
+    });
+
 });

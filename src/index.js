@@ -12,7 +12,7 @@ var FunctionHarness = function (nameOrPath, config = {}) {
         let data = {};
 
         if (!httpTriggerData) {
-            data =  { httpTrigger: {reqBody: that.moduleConfig.sampleData }};
+            data = { httpTrigger: { reqBody: that.moduleConfig.sampleData } };
         } else {
             data = Object.assign({}, { httpTrigger: httpTriggerData }, otherBindings);
         }
@@ -41,12 +41,10 @@ var FunctionHarness = function (nameOrPath, config = {}) {
                         resolve(invoke.context);
                         return cb(invoke.context);
                     }
-                },
-                log: function (log) {
-                    console.log(log);
                 }
             }
 
+            setupLogging(invoke.context);
             inputs.unshift(invoke.context);
 
             that.moduleConfig.function.apply(null, inputs);
@@ -57,6 +55,14 @@ var FunctionHarness = function (nameOrPath, config = {}) {
         invoke: that.invoke,
         invokeHttpTrigger: that.invokeHttpTrigger
     }
+}
+
+function setupLogging(context) {
+    let log = console.log;
+    [ 'info', 'error', 'warn', 'verbose'].forEach((logLevel) => {
+        log[logLevel] = console.log;
+    });
+    context.log = log;
 }
 
 module.exports = FunctionHarness
