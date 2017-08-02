@@ -41,7 +41,8 @@ var FunctionHarness = function (nameOrPath, config = {}) {
                         resolve(invoke.context);
                         return cb(invoke.context);
                     }
-                }
+                },
+                res: createDefaultResponse() 
             }
 
             setupLogging(invoke.context);
@@ -59,10 +60,26 @@ var FunctionHarness = function (nameOrPath, config = {}) {
 
 function setupLogging(context) {
     let log = console.log;
-    [ 'info', 'error', 'warn', 'verbose'].forEach((logLevel) => {
+    ['info', 'error', 'warn', 'verbose'].forEach((logLevel) => {
         log[logLevel] = console.log;
     });
     context.log = log;
 }
+
+function createDefaultResponse() {
+    var response = {
+        status: code => {
+            response.status = code;
+            return response;
+        },
+        json: value => {
+            response.body = value;
+            return response;
+        }
+    }
+
+    return response;
+}
+
 
 module.exports = FunctionHarness

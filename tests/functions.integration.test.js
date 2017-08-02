@@ -55,4 +55,21 @@ test('#### function integration tests ####', function(group){
         });
     });
 
+    group.test('if express functions are used for http should not fail test', function (t){
+        t.plan(2);
+
+        var expressHttpFunc =  func('express-http-test',  {dirname: 'tests/test-functions'});
+
+        const expectedBody = {
+            test: "test"
+        }
+        expressHttpFunc.invokeHttpTrigger({ reqBody: {}}).then( context => {
+            t.equal(context.res.status, 400);
+            t.same(context.res.body, expectedBody);
+        })
+        .catch(err => {
+            t.fail(`should not reach here: ${err}`);
+        });
+    });
+
 });
