@@ -14,6 +14,18 @@ test('#### function loader tests ####', function (group) {
         t.end();
     });
 
+    group.test('when provided no directory find host.json dir and load functions', function (t) {
+        const actual = funcLoader.loadFunction('simple-test-func');
+        const expected = {
+            config: {},
+            function: require('./test-functions/simple-test-func/index'),
+            sampleData:{}
+        };
+
+        t.same(actual, expected);
+        t.end();
+    });
+
     group.test('should load function.json and single exported function', function (t) {
         const actual = funcLoader.loadFunction('single-export-func', 'tests/test-functions');
         const expected = {

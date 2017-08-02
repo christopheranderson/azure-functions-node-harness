@@ -2,8 +2,8 @@ const path = require('path'),
     fs = require('fs');
 
 module.exports = {
-    loadFunction: function(nameOrPath, dirname) {   
-        var directory = dirname || process.cwd();
+    loadFunction: function (nameOrPath, dirname) {
+        var directory = dirname || findHostDir();
 
         var pathToModule = path.resolve(path.join(directory, nameOrPath));
 
@@ -11,35 +11,34 @@ module.exports = {
             throw `Could not find a function: '${pathToModule}' not a valid directory.`;
         }
 
-        try{
+        try {
             pathToModule = require.resolve(pathToModule)
-        }catch(err){
+        } catch (err) {
             throw `Could not find a function: '${pathToModule}' not a valid module.`;
         }
 
         var config = {};
-        try{
+        try {
             config = require(path.join(path.dirname(pathToModule), 'function.json'));
-        }catch(err){
+        } catch (err) {
             throw `Could not find a function: '${pathToModule}' no function.json file.`;
         }
 
         const sampleDataPath = path.join(path.dirname(pathToModule), 'sample.dat');
         let sampleData = {};
-        if (fs.existsSync(sampleDataPath))
-        {
-            try{
+        if (fs.existsSync(sampleDataPath)) {
+            try {
                 sampleData = JSON.parse(fs.readFileSync(sampleDataPath, 'utf8'));
-            }catch(ex){
+            } catch (ex) {
                 console.log("was unable to load sample data. skipping.");
                 // noop 
             }
-        }   
+        }
 
         var m = require(pathToModule);
 
-        if(typeof m === 'function') {
-            return { 
+        if (typeof m === 'function') {
+            return {
                 function: m,
                 config: config,
                 sampleData: sampleData
@@ -66,4 +65,39 @@ module.exports = {
             throw 'Could not find a function: failed on the Azure Functions resolution rules.';
         }
     }
+}
+
+function findHostDir() {   
+    const cwd = process.cwd();
+    const hostFileDir = findDirWithHostFile(cwd); 
+    
+    // if can't find then return cwd and hope for the best :-)
+    return  hostFileDir || cwd;    
+}
+
+// there is probably an api that helps search faster?
+function findDirWithHostFile(dir) {
+    var hostDirectory;
+    fs.readdirSync(dir).forEach(shortname => {
+        if (shortname === "host.json") {
+            hostDirectory = dir;
+            return;
+        }
+        
+        const subdir = dir + '/' + shortname;
+        var stat = fs.statSync(subdir);
+
+        if (stat && stat.isDirectory() && 
+            shortname !=='node_modules' && 
+            shortname !=='.git') {
+            
+            const result = findDirWithHostFile(subdir)
+            if (result){
+                hostDirectory =result;
+                return;
+            }
+        } 
+    });
+
+    return hostDirectory;
 }
