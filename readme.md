@@ -6,9 +6,10 @@ Easily invoke your Functions from test harnesses, etc.
 Please leave feedback and suggestions (through github issues).
 
 ## Install
-coming soon to npm. 
 
-for now: npm install christopheranderson/azure-functions-node-harness --save-dev
+```
+npm i azure-functions-node-harness
+```
 
 ## Usage
 
