@@ -2,12 +2,13 @@
 
 Easily invoke your Functions from test harnesses, etc.
 
-This is a fork from https://github.com/christopheranderson/azure-functions-node-harness.  I am using this repo for testing a few ideas and prototyping.  Please leave feedback (through github issues) if you love it, hate it, or have suggestions.
+🚧 This library is not supported by the Azure Functions team. 🚧 
+Please leave feedback and suggestions (through github issues).
 
 ## Install
 coming soon to npm. 
 
-for now: npm install jsturtevant/azure-functions-node-harness --save-dev
+for now: npm install christopheranderson/azure-functions-node-harness --save-dev
 
 ## Usage
 
