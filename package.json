@@ -11,7 +11,7 @@
     "azurefunctions",
     "test"
   ],
-  "author": "christopheranderson",
+  "author": "Christopher Anderson & James Sturtevant",
   "license": "MIT",
   "devDependencies": {
     "tap-spec": "^4.1.1",
