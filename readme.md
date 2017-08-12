@@ -1,3 +1,5 @@
+![build status](https://jsturtevant.visualstudio.com/_apis/public/build/definitions/c1e2be4d-7039-47d4-8b4a-f3ed9e972e33/12/badge)
+
 # Azure Functions Node Harness
 
 Easily invoke your Functions from test harnesses, etc.
