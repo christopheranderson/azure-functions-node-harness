@@ -1,6 +1,6 @@
 {
   "name": "azure-functions-node-harness",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "Easily invoke your NodeJS Azure Functions during unit tests",
   "main": "./src/index.js",
   "scripts": {
