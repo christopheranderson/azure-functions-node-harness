@@ -1,10 +1,13 @@
 # Azure Functions Node Harness
 
-> :construction: This library is still in alpha and not supported by the Azure Functions team for any use. :construction:
-
 Easily invoke your Functions from test harnesses, etc.
 
-npm i --save christopheranderson/<TODO>
+This is a fork from https://github.com/christopheranderson/azure-functions-node-harness.  I am using this repo for testing a few ideas and prototyping.  Please leave feedback (through github issues) if you love it, hate it, or have suggestions.
+
+## Install
+coming soon to npm. 
+
+for now: npm install jsturtevant/azure-functions-node-harness --save-dev
 
 ## Usage
 
@@ -12,11 +15,13 @@ npm i --save christopheranderson/<TODO>
 var func = require('azure-functions-node-harness');
 
 var queueFunc = func('queue'); // Optional config: , {dirname: __dirname}); 
-var invocation = queueFunc.invoke({trigger: {'hello':'world'}});
+var invocation = queueFunc.invoke({'hello':'world'});
 
-invocation.then(function(data) {
-    console.log('done');
-    console.log(JSON.stringify(data, null, ' ' ));
+invocation.then(function(context) {
+    // validate result 
+    if (context.bindings.out == "somevalue"){
+        console.log("success");
+    }
 })
 ```
 
@@ -29,6 +34,7 @@ var queueFunc = func('queue'); // Optional config: , {dirname: __dirname});
 var httpFunc = new func('queue'); //same thing - supports new and factory idioms
 ```
 
+#### Parameters
  - nameOrPath: string
     - Selects the name or path you want to load. Uses node module loading logic (i.e. `queue` will look for `./queue/index.js`, )
  - config: Object
@@ -36,6 +42,8 @@ var httpFunc = new func('queue'); //same thing - supports new and factory idioms
     - Properties:
         - dirname: string
             - Which directory to look in for functions. Useful when tests are in a different directory than sample functions.
+        - moduleConfig: object
+            - instead of looking up function you can pass a function and it's function.json manually. mostly used internally.          
 
 ### `#.invoke(data: Object, [cb: function])`
 
@@ -45,32 +53,103 @@ var func = require('azure-functions-node-harness');
 var queueFunc = func('queue');
 
 // Supports callbacks
-queueFunc.invoke({trigger: {'hello':'world'}}, function(err, results) {
+queueFunc.invoke({parameterName: {'hello':'world'}}, function(err, results) {
     // add results handling logic here
 };
 
 // Returns a promise if no callback is given
-var invocation = queueFunc.invoke({trigger: {'hello':'world'}});
-invocation.then(function(results){
+var invocation = queueFunc.invoke({parameterName: {'hello':'world'}});
+invocation.then(function(context){
     // success logic here
 }).catch(function(err){
     // failure logic here
-})
-
+});
 ```
 
+#### Parameters
  - data
     - Key-value list of inputs. Use the name of your bindings for the keys
  - cb
-    - Optionally give a callback for your Function. If you don't, the funciton will return a Promise.
+    - Optionally give a callback for your Function. If you don't, the function will return a Promise.
+
+### `#.invokeHttpTrigger(httpTriggerData,data: Object, [cb: function])` 
+Invoke http trigger functions.  It is possible to use the `invoke` to get the same results but this simplifies the building of the request object.
+
+```javascript
+var httpFunction = func('httpfunc');
+
+httpFunction.invokeHttpTrigger({ 
+    reqBody: requestBody,
+    method: "POST",  //optional
+    headers: headers //optional, along with any other request parameters you might want to tweak
+ }, {parameterName: "another parameter"}).then(context => {
+    // do test validations here.
+});
+```
+
+If you use the ```sample.dat``` file for testing locally with the Azure functions CLI you can use that file by calling ```invokeHttpTrigger``` with no parameters.  
+
+```javascript
+var httpFunction = func('httpfunc');
+
+// sample.dat is used for request body. 
+httpFunction.invokeHttpTrigger().then(context => {
+    // do test validations here.
+});
+```
+
+#### Parameters
+- httpTrigger
+    - object with reqBody.  Simplifies building the entire http request object. Can override any parameters like `headers`.
+- data
+    - Key-value list of other inputs. Use the name of your bindings for the keys
+- cb
+    - Optionally give a callback for your Function. If you don't, the function will return a Promise.
 
 ## Using with test frameworks (coming soon...)
 
-TBD, but basically, you can use something like mocha, set up the function in before then call invoke in each test. If you use chai and chai-as-promised, you should be able to have some nifty assertions.
+The general idea is to set up the function once then call invoke in each test. If you use chai and chai-as-promised, you should be able to have some nifty assertions.
 
- - [mocha](https://mochajs.org/)
- - [chai](http://chaijs.com/)
- - [chai-as-promised](https://github.com/domenic/chai-as-promised)
+### [mocha](https://mochajs.org/) 
+coming soon
+
+### [chai](http://chaijs.com/)
+coming soon
+
+### [chai-as-promised](https://github.com/domenic/chai-as-promised)
+coming soon
+ 
+### [tape](https://github.com/substack/tape)
+
+Your test file would look like:
+
+```javascript
+var test = require('tape');
+var funcHarness = require('azure-functions-node-harness');
+
+test('Tests', function (group) {
+    var funcToTest = funcHarness('NameOfFunction', { dirname: 'foldername-functions-live-in' });
+
+    group.test('test to run', function (t) {
+        t.plan(1);
+
+        funcToTest.invoke({
+            data: {}
+        }).then(context => {
+            t.equal("yippee!", context.binding.output);
+        }).catch(err =>{
+            t.fail(`something went wrong during test: ${err}`);
+        });
+});
+```
+
+## Build
+Clone this repository then run:
+
+```
+npm install 
+npm test
+```
 
 ## License
 

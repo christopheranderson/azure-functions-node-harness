@@ -1,104 +1,85 @@
-var util = require('util'),
-    path = require('path')
+const functionLoader = require('./function-loader'),
+    inputBinder = require('./input-binder');
 
-var FunctionHarness = function(nameOrPath, config) {
+
+var FunctionHarness = function (nameOrPath, config = {}) {
     that = this;
-    this.config = config || {};
-    this.f = loadFunction(nameOrPath, this.config.dirname);
-    this.invoke = function(data, cb) {
-        invoke = this;
-        var inputs = (function(data) {
-            var out = [];
-            for(var name in data) {
-                out.push(data[name]);
-            }
-            return out;
-        })(data);
+    this.config = config;
 
-        if(cb) {
-            this.context = {
-                bindings: data,
-                done: function(results) {
-                    var output = [];
-                    
-                    for (var name in results) {
-                        invoke.bindings[name] = results[name];
-                    }
+    this.moduleConfig = this.config.moduleConfig || functionLoader.loadFunction(nameOrPath, this.config.dirname);
 
-                    cb(invoke.context.bindings);
-                },
-                log: function(log) {
-                    console.log(log);
-                }
-            }
+    this.invokeHttpTrigger = function (httpTriggerData, otherBindings = {}, cb = _ => { }) {
+        let data = {};
 
-            inputs.unshift(this.context);
-
-            that.f.function.apply(null, inputs);
+        if (!httpTriggerData) {
+            data = { httpTrigger: { reqBody: that.moduleConfig.sampleData } };
         } else {
-            return new Promise(function(resolve, reject) {
-                invoke.context = {
-                    bindings: data,
-                    done: function(err, results) {
-                        if(err) {
-                            reject(err);
-                        } else {
-                            var output = [];
-                    
-                            for (var name in results) {
-                                invoke.bindings[name] = results[name];
-                            }
-
-                            resolve(invoke.context.bindings);
-                        }
-                    },
-                    log: function(log) {
-                        console.log(log);
-                    }
-                }
-
-                inputs.unshift(invoke.context);
-
-                that.f.function.apply(null, inputs);
-            });
+            data = Object.assign({}, { httpTrigger: httpTriggerData }, otherBindings);
         }
+
+        return this.invoke(data);
+    }
+
+    this.invoke = function (data, cb = _ => { }) {
+        invoke = this;
+        var inputs = inputBinder(data);
+
+        return new Promise(function (resolve, reject) {
+            invoke.context = {
+                bindings: data,
+                done: function (err, results) {
+                    if (err) {
+                        reject(err);
+                        return cb(err);
+                    } else {
+                        var output = [];
+
+                        for (var name in results) {
+                            invoke.bindings[name] = results[name];
+                        }
+
+                        resolve(invoke.context);
+                        return cb(invoke.context);
+                    }
+                },
+                res: createDefaultResponse() 
+            }
+
+            setupLogging(invoke.context);
+            inputs.unshift(invoke.context);
+
+            that.moduleConfig.function.apply(null, inputs);
+        });
+
     }
     return {
-        invoke: that.invoke
+        invoke: that.invoke,
+        invokeHttpTrigger: that.invokeHttpTrigger
     }
 }
 
-var loadFunction = function(nameOrPath, dirname) {   
-    var directory = dirname || process.cwd();
-
-    //Otherwise, if we were given a path or name, attempt to load it
-    var pathToModule = require.resolve(path.resolve(path.join(directory, nameOrPath)));
-    var config = require(path.join(path.dirname(pathToModule), 'function.json'));
-    var m = require(pathToModule);
-
-    if(typeof m === 'function') {
-        return { 
-            function: m,
-            config: config
-        };
-    } else if (config.entryPoint && m[config.entryPoint]) {
-        return {
-            function: m[config.entryPoint],
-            config: config
-        };
-    } else if (Object.keys(m).length === 1) {
-        return {
-            function: m[Object.keys(m)[0]],
-            config: config
-        };
-    } else if (typeof m['run'] === 'function') {
-        return {
-            function: m['run'],
-            config: config
-        };
-    } else {
-        throw 'Could not find a function based on the Azure Functions resolution rules'
-    }
+function setupLogging(context) {
+    let log = console.log;
+    ['info', 'error', 'warn', 'verbose'].forEach((logLevel) => {
+        log[logLevel] = console.log;
+    });
+    context.log = log;
 }
+
+function createDefaultResponse() {
+    var response = {
+        status: code => {
+            response.status = code;
+            return response;
+        },
+        json: value => {
+            response.body = value;
+            return response;
+        }
+    }
+
+    return response;
+}
+
 
 module.exports = FunctionHarness

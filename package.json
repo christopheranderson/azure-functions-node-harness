@@ -4,6 +4,7 @@
   "description": "Easily invoke your NodeJS Azure Functions during unit tests",
   "main": "./src/index.js",
   "scripts": {
+    "test": "node_modules\\.bin\\tape tests/**/*.test.js | node_modules\\.bin\\tap-spec"
   },
   "keywords": [
     "azure",
@@ -11,5 +12,9 @@
     "test"
   ],
   "author": "christopheranderson",
-  "license": "MIT"
+  "license": "MIT",
+  "devDependencies": {
+    "tap-spec": "^4.1.1",
+    "tape": "^4.7.0"
+  }
 }
